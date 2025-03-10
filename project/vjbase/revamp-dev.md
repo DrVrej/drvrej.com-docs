@@ -1,0 +1,259 @@
+__NOTE:__ Most "VJ_" functions and enums have all been converted to the VJ library, I recommend updating them!   
+__NOTE:__ Most `CustomOn*` functions have been renamed & merged make sure to check the corresponding base file for the new names!   
+__NOTE:__ Most of the removed/renamed functions and variables have backwards compatibility though it's highly recommended to update them!   
+- Added: `VJ.GetMoveVelocity(ent)`, `VJ.GetMoveDirection(ent, ignoreZ)`, `VJ.TraceDirections(ent, trType, maxDist, requireFullDist, returnAsDict, numDirections, excludeForward, excludeBack, excludeLeft, excludeRight)`, `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`, `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
+- Added AI tasks: `TASK_VJ_PLAY_ACTIVITY`, `TASK_VJ_PLAY_SEQUENCE`
+- Added to entity meta table: `ENTITY:CanBeEngaged(otherEnt, distance)`, `ENTITY:HandlePerceivedRelationship(otherEnt, distance, isFriendly)`
+- Added `VJ.CalculateTrajectory()` which is a newer version of `ENTITY:CalculateProjectile()`
+- Added global enum: `D_VJ_INTEREST`, `VJ.DMG_*`, `VJ.ALERT_STATE_*`, `VJ.DANGER_TYPE_*`, `VJ.WEP_ATTACK_STATE_*`, `VJ.MEM_*`, `VJ.ANIM_TYPE_*`, `VJ.BLOOD_COLOR_*`, `VJ.PROJ_TYPE_*`, `VJ.PROJ_COLLISION_*`, `VJ.KILLICON_*`, `VJ.COLOR_*`
+- Added global object `VJ_RecipientFilter`
+- Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
+- Spawner Base now uses Vector instead of a table for `SpawnPosition`
+- Fixed Spawner Base changing its position on spawn, in some cases it caused respawned NPCs to be created stuck inside the map or another entity
+- Deprecated: `ENTITY:CalculateProjectile()`
+- Renamed module `ai_vj_schedule` --> `vj_ai_schedule`
+- Renamed module `ai_vj_task` --> `vj_ai_task`
+- Removed global functions: `VJ_PICKRANDOMTABLE`, `VJ_GetSequenceName`, `VJ_FindInCone`, `VJ_RemoveAnimExtensions`, `GetTaskList`
+- Removed unused module `sound_vj_track`
+- Removed `self:CustomOnInitialize()` from `prop_vj_animatable`
+- Removed `VJ_CreateBoneFollower` and the associated entity `obj_vj_bonefollower`
+- NPC Bases:
+  - Added: `self:CheckRelationship()`, `self:SetRelationshipMemory(ent, memoryName, memoryValue)`, `self:OnFollow(status, ent)`, `self:SetTurnTarget(target, faceTime, stopOnFace, visibleOnly)`, `self:GetAimPosition(target, aimOrigin, predictionRate, projectileSpeed)`, `self:GetAimSpread(target, goalPos, modifier)`, `self:SetPhysicsDamageScale(scale)`, `self:IsScheduleFinished(schedule)`, `self:UpdateAnimationTranslations(wepHoldType)`, `self:SetAnimationTranslations(wepHoldType)`, `self:ResolveAnimation(tbl)`, `self.JumpParams`, `self.AnimationTranslations`, `self.CurrentAttackAnimationTime`, `self.LastAnimationType`, `self.CanReceiveOrders`, `self.GibOnDeathFilter`, `self.DeathAllyResponse`, `self.DeathAllyResponse_MoveLimit`, `self.DamageResponse`
+  - Added (Humans): `self:OnDangerDetected(dangerType, data)`, `self:OnGrenadeAttack(status, overrideEnt, landDir)`, `self:OnGrenadeAttackExecute(status, grenade, overrideEnt, landDir, landingPos)` `self.Weapon_AimTurnDiff`, `self.GrenadeAttackBone`, `self.NextAnyAttackTime_Grenade`, `self.WeaponAttackState`
+  - Added (Creatures): `self.EatCooldown`
+  - Added Client side functions: `self:CustomOnInitialize()`, `self:Controller_CalcView(ply, origin, angles, fov, camera, cameraMode)`
+  - Renamed `self:VJ_ACT_PLAYACTIVITY()` --> `self:PlayAnim()`
+  - Changes to `self:PlayAnim()`:
+    - Added new returns (in order): `anim`, `animDur`, `animType`
+    - Added `"LetAttacks"` option for `stopActivities`, makes the animation interruptible by attacks
+    - Added `"Visible"` option for `faceEnemy`, only faces the enemy while it's visible
+    - Added fail safe if wrong input is given for `stopActivitiesTime`
+    - Will now translate the animation if there is one
+    - Now correctly calculates the playback rate
+    - Extra option `PlayBackRate` is now per-animation!
+    - Removed extra parameters: `SequenceInterruptible`, `SequenceDuration`
+    - Fixed returning nil in certain cases for the creature base
+  - Added parameters `moveType` and `sdFile` to `self:OnFootstepSound()`
+  - `self.RangeAttackProjectiles` and `self.GrenadeAttackEntity` can now be a tables
+  - `self.MeleeAttackDistance` and `self.MeleeAttackDamageDistance` can now be set to `false` to let the base auto calculate the distance based on the NPC's collision bounds
+  - `self:GetShootPos()` is now defaulted to `Vector(0, 0, 55)` instead of the NPC's origin
+  - `self:Follow()` now has a second return value
+  - `self:IsBusy()` now has a parameter `checkType` which can be used to only check behaviors or activities
+  - Grenade attack is now seeded and supports events similar to other attacks
+  - `self.FootstepSoundTimerWalk` and `self.FootstepSoundTimerRun` can now accept `false`, which will disable them
+  - `self.BecomeEnemyToPlayer` now accepts a number, which determines the level to become enemy
+  - `self.NextGrenadeAttackTime` now works the same way as other attacks
+  - `self.MeleeAttackStopOnHit` and `self.LeapAttackStopOnHit` now work much better
+  - All attack timer variables starting with `Next` can now accept `VJ.SET` to randomize them
+  - Following animation variables can now be set to `false` to disable them:
+    - `self.AnimTbl_MeleeAttack`
+    - `self.AnimTbl_RangeAttack`
+    - `self.AnimTbl_LeapAttack`
+    - `self.AnimTbl_GrenadeAttack`
+    - `self.AnimTbl_WeaponAttackGesture`
+    - `self.AnimTbl_CallForHelp`
+    - `self.AnimTbl_Medic_GiveHealth`
+    - `self.AnimTbl_DamageAllyResponse`
+  - `self.CanFlinch` now uses `false`, `true`, and `"DamageTypes"` instead of numbers
+  - `self.FlinchHitGroupMap` can now accept a non-table value for the hitgroup name
+  - Renamed `self:FootStepSoundCode()` --> `self:PlayFootstepSound()`
+  - Renamed `self:VJ_DecideSoundPitch()` --> `self:GetSoundPitch()`
+  - Renamed `self:VJ_DoSetEnemy()` --> `self:ForceSetEnemy()`
+  - Renamed `self:DoChaseAnimation()` --> `self:MaintainAlertBehavior()`
+  - Renamed `self:VJ_GetDifficultyValue()` --> `self:ScaleByDifficulty()`
+  - Renamed `self:OnCreateSound(sdFile)` --> `self:OnPlaySound(sdFile)`
+  - Renamed `self:RangeAttackCode_OverrideProjectilePos(projectile)` --> `self:RangeAttackProjSpawnPos(projectile)`
+  - Renamed `self:RangeAttackCode_GetShootPos(projectile)` --> `self:RangeAttackProjVelocity(projectile)`
+  - Renamed `self:SetUpGibesOnDeath()` --> `self:HandleGibOnDeath()`
+  - Renamed `self:MeleeAttackCode()` --> `self:ExecuteMeleeAttack()`
+  - Renamed `self:RangeAttackCode()` --> `self:ExecuteRangeAttack()`
+  - Renamed `self:LeapDamageCode()` --> `self:ExecuteLeapAttack()`
+  - Renamed `self:CustomAttack()` --> `self:OnThinkAttack(isAttacking, enemy)`
+  - Renamed `self.LatestEnemyDistance` --> `self.EnemyData.Distance`
+  - Renamed `self.NearestPointToEnemyDistance` --> `self.EnemyData.DistanceNearest`
+  - Renamed `self.SoundTbl_MoveOutOfPlayersWay` --> `self.SoundTbl_YieldToPlayer`
+  - Renamed `self.CustomBlood_Decal` --> `self.BloodDecal`
+  - Renamed `self.CustomBlood_Particle` --> `self.BloodParticle`
+  - Renamed `self.CustomBlood_Pool` --> `self.BloodPool`
+  - Renamed `self.HasShootWhileMoving` --> `self.Weapon_CanMoveFire`
+  - Renamed `self.WeaponBackAway_Distance` --> `self.Weapon_RetreatDistance`
+  - Renamed `self.NextFlinchTime` --> `self.FlinchCooldown`
+  - Renamed `self.HitGroupFlinching_Values` --> `self.FlinchHitGroupMap`
+  - Renamed `self.HitGroupFlinching_DefaultWhenNotHit` --> `self.FlinchHitGroupPlayDefault`
+  - Renamed `self.NextCallForHelpTime` --> `self.CallForHelpCooldown`
+  - Renamed `self.CallForHelpAnimationFaceEnemy` --> `self.CallForHelpAnimFaceEnemy`
+  - Renamed `self.NextCallForHelpAnimationTime` --> `self.CallForHelpAnimCooldown`
+  - Renamed `self.InvestigateSoundDistance` --> `self.InvestigateSoundMultiplier`
+  - Renamed `self.CanThrowBackDetectedGrenades` --> `self.CanRedirectGrenades`
+  - Renamed `self.AttackStatus` --> `self.AttackState`
+  - Renamed `self.CombatFaceEnemy` --> `self.CanTurnWhileMoving`
+  - Renamed `self.GrenadeAttackFussTime` --> `self.GrenadeAttackFuseTime`
+  - Renamed `self.ThrowGrenadeChance` --> `self.GrenadeAttackChance`
+  - Renamed `self.NoWeapon_UseScaredBehavior` --> `self.Weapon_UnarmedBehavior`
+  - Renamed `self.WeaponSpread` --> `self.Weapon_Accuracy`
+  - Renamed `self.AnimTbl_WeaponAttackFiringGesture` --> `self.AnimTbl_WeaponAttackGesture`
+  - Renamed `self.CanUseSecondaryOnWeaponAttack` --> `self.Weapon_CanSecondaryFire`
+  - Renamed `self.WeaponAttackSecondaryTimeUntilFire` --> `self.Weapon_SecondaryFireTime`
+  - Renamed `self.AllowWeaponReloading` --> `self.Weapon_CanReload`
+  - Renamed `self.WeaponReload_FindCover` --> `self.Weapon_FindCoverOnReload`
+  - Renamed `self.MoveRandomlyWhenShooting` --> `self.Weapon_Strafe`
+  - Renamed `self.WaitForEnemyToComeOut` --> `self.Weapon_OcclusionDelay`
+  - Renamed `self.WaitForEnemyToComeOutTime` --> `self.Weapon_OcclusionDelayTime`
+  - Renamed `self.WaitForEnemyToComeOutDistance` --> `self.Weapon_OcclusionDelayMinDist`
+  - Renamed `self.CanCrouchOnWeaponAttack` --> `self.Weapon_CanCrouchAttack`
+  - Renamed `self.CanCrouchOnWeaponAttackChance` --> `self.Weapon_CrouchAttackChance`
+  - Renamed `self.MoveOutOfFriendlyPlayersWay` --> `self.YieldToAlliedPlayers`
+  - Renamed `self.UsePlayerModelMovement` --> `self.UsePoseParameterMovement`
+  - Renamed `self.SoundTbl_OnKilledEnemy` --> `self.SoundTbl_KilledEnemy`
+  - Renamed `self.HasOnKilledEnemySounds` --> `self.HasKilledEnemySounds`
+  - Renamed `self.OnKilledEnemySoundChance` --> `self.OnKilledEnemySoundChance`
+  - Renamed `self.NextSoundTime_OnKilledEnemy` --> `self.NextSoundTime_KilledEnemy`
+  - Renamed `self.OnKilledEnemySoundLevel` --> `self.KilledEnemySoundLevel`
+  - Renamed `self.OnKilledEnemySoundPitch` --> `self.KilledEnemySoundPitch`
+  - Renamed `self.OnlyDoKillEnemyWhenClear` --> `self.KilledEnemySoundLast`
+  - Renamed `self.HasOnReceiveOrderSounds` --> `self.HasReceiveOrderSounds`
+  - Renamed `self.SoundTbl_OnReceiveOrder` --> `self.SoundTbl_ReceiveOrder`
+  - Renamed `self.OnReceiveOrderSoundChance` --> `self.ReceiveOrderSoundChance`
+  - Renamed `self.OnReceiveOrderSoundLevel` --> `self.ReceiveOrderSoundLevel`
+  - Renamed `self.OnReceiveOrderSoundPitch` --> `self.ReceiveOrderSoundPitch`
+  - Renamed `self.SoundTbl_OnDangerSight` --> `self.SoundTbl_DangerSight`
+  - Renamed `self.SoundTbl_OnGrenadeSight` --> `self.SoundTbl_GrenadeSight`
+  - Renamed `self.NoChaseAfterCertainRange` --> `self.LimitChaseDistance`
+  - Renamed `self.NoChaseAfterCertainRange_CloseDistance` --> `self.LimitChaseDistance_Min`
+  - Renamed `self.NoChaseAfterCertainRange_FarDistance` --> `self.LimitChaseDistance_Max`
+  - Renamed `self.AlertedToIdleTime` --> `self.AlertTimeout`
+  - Renamed `self.IsMedicSNPC` --> `self.IsMedic`
+  - Renamed `self.Medic_HealthAmount` --> `self.Medic_HealAmount`
+  - Renamed `self.Medic_CanBeHealed` --> `self.VJ_ID_Healable`
+  - Renamed `self.SoundTbl_MedicAfterHeal` --> `self.SoundTbl_MedicOnHeal`
+  - Renamed `self.MedicAfterHealSoundChance` --> `self.MedicOnHealSoundChance`
+  - Renamed `self.BeforeHealSoundLevel` --> `self.MedicBeforeHealSoundLevel`
+  - Renamed `self.AfterHealSoundLevel` --> `self.MedicOnHealSoundLevel`
+  - Renamed `self.BeforeHealSoundPitch` --> `self.MedicBeforeHealSoundPitch`
+  - Renamed `self.AfterHealSoundPitch` --> `self.MedicOnHealSoundPitch`
+  - Renamed `self.HasDeathRagdoll` --> `self.HasDeathCorpse`
+  - Renamed `self.AllowedToGib` --> `self.CanGib`
+  - Renamed `self.HasGibOnDeath` --> `self.CanGibOnDeath`
+  - Renamed `self.HasGibDeathParticles` --> `self.HasGibOnDeathEffects`
+  - Renamed `self.HasItemDropsOnDeath` --> `self.DropDeathLoot`
+  - Renamed `self.ItemDropsOnDeathChance` --> `self.DeathLootChance`
+  - Renamed `self.ItemDropsOnDeath_EntityList` --> `self.DeathLoot`
+  - Renamed `self.WaitBeforeDeathTime` --> `self.DeathDelayTime`
+  - Renamed `self.GrenadeAttackThrowDistance` --> `self.GrenadeAttackMaxDistance`
+  - Renamed `self.GrenadeAttackThrowDistanceClose` --> `self.GrenadeAttackMinDistance`
+  - Renamed `self.NextThrowGrenadeTime` --> `self.NextGrenadeAttackTime`
+  - Renamed `self.TimeUntilGrenadeIsReleased` --> `self.GrenadeAttackThrowTime`
+  - Renamed `self.CallForBackUpOnDamage` --> `self.DamageAllyResponse`
+  - Renamed `self.CallForBackUpOnDamageAnimation` --> `self.AnimTbl_DamageAllyResponse`
+  - Renamed `self.NextCallForBackUpOnDamageTime` --> `self.DamageAllyResponse_Cooldown`
+  - Renamed `self.VJC_Data` --> `self.ControllerParams`
+  - Renamed `self.FriendsWithAllPlayerAllies` --> `self.AlliedWithPlayerAllies`
+  - Renamed `self.UseTheSameGeneralSoundPitch` --> `self.MainSoundPitchStatic`
+  - Renamed `self.AllowMovementJumping` --> `self.JumpParams.Enabled`
+  - Renamed `self.MaxJumpLegalDistance` --> `self.JumpParams.MaxRise`
+  - Renamed `self.MoveOrHideOnDamageByEnemy` --> `self.CombatDamageResponse`
+  - Renamed `self.MoveOrHideOnDamageByEnemy_HideTime` --> `self.CombatDamageResponse_CoverTime`
+  - Renamed `self.Immune_AcidPoisonRadiation` --> `self.Immune_Toxic`
+  - Renamed `self.Immune_Blast` --> `self.Immune_Explosive`
+  - Renamed `self.StopMeleeAttackAfterFirstHit` --> `self.MeleeAttackStopOnHit`
+  - Renamed `self.MeleeAttackDSPSoundType` --> `self.MeleeAttackDSP`
+  - Renamed `self.RangeAttackEntityToSpawn` --> `self.RangeAttackProjectiles`
+  - Renamed `self.RangeDistance` --> `self.RangeAttackMaxDistance`
+  - Renamed `self.RangeToMeleeDistance` --> `self.RangeAttackMinDistance`
+  - Renamed `self.StopLeapAttackAfterFirstHit` --> `self.LeapAttackStopOnHit`
+  - Renamed `self.LeapDistance` --> `self.LeapAttackMaxDistance`
+  - Renamed `self.LeapToMeleeDistance` --> `self.LeapAttackMinDistance`
+  - Renamed `self.DisableWeapons` --> `self.Weapon_Disabled`
+  - Renamed `self.Weapon_FiringDistanceClose` --> `self.Weapon_MinDistance`
+  - Renamed `self.Weapon_FiringDistanceFar` --> `self.Weapon_MaxDistance`
+  - Renamed `self.DisableFindEnemy` --> `self.EnemyDetection`
+  - Renamed `self.DisableTouchFindEnemy` --> `self.EnemyTouchDetection`
+  - Renamed `self.FindEnemy_CanSeeThroughWalls` --> `self.EnemyXRayDetection`
+  - Renamed `self.HasFootStepSound` --> `self.HasFootstepSounds`
+  - Renamed `self.FootStepPitch` --> `self.FootstepSoundPitch`
+  - Renamed `self.FootStepSoundLevel` --> `self.FootstepSoundLevel`
+  - Renamed `self.FootStepTimeWalk` --> `self.FootstepSoundTimerWalk`
+  - Renamed `self.FootStepTimeRun` --> `self.FootstepSoundTimerRun`
+  - Renamed `self.SlowPlayerOnMeleeAttack` --> `self.MeleeAttackPlayerSpeed`
+  - Renamed `self.SlowPlayerOnMeleeAttack_WalkSpeed` --> `self.MeleeAttackPlayerSpeedWalk`
+  - Renamed `self.SlowPlayerOnMeleeAttack_RunSpeed` --> `self.MeleeAttackPlayerSpeedRun`
+  - Renamed `self.SlowPlayerOnMeleeAttackTime` --> `self.MeleeAttackPlayerSpeedTime`
+  - Renamed `self.HasMeleeAttackSlowPlayerSound` --> `self.HasMeleeAttackPlayerSpeedSounds`
+  - Renamed `self.SoundTbl_MeleeAttackSlowPlayer` --> `self.SoundTbl_MeleeAttackPlayerSpeed`
+  - Renamed `self.MeleeAttackSlowPlayerSoundLevel` --> `self.MeleeAttackPlayerSpeedSoundLevel`
+  - Renamed `self.PropAP_MaxSize` --> `self.PropInteraction_MaxScale`
+  - Merged `self.AttackProps` and `self.PushProps` --> `self.PropInteraction`
+  - Merged `self:GetMeleeAttackDamageOrigin()` --> `self:MeleeAttackTraceOrigin()`
+  - Merged `self:CustomOnMeleeAttack_BeforeStartTimer()`, and `self:CustomOnMeleeAttack_AfterStartTimer()` --> `self:OnMeleeAttack(status, enemy)`
+  - Merged `self:CustomOnRangeAttack_BeforeStartTimer()`, and `self:CustomOnRangeAttack_AfterStartTimer()` --> `self:OnRangeAttack(status, enemy)`
+  - Merged `self:CustomRangeAttackCode()`, `self:CustomRangeAttackCode_BeforeProjectileSpawn()`, and `self:CustomRangeAttackCode_AfterProjectileSpawn()` --> `self:OnRangeAttackExecute(status, enemy, projectile)`
+  - Merged `self:CustomOnLeapAttackVelocityCode()`, `self:CustomOnLeapAttack_BeforeStartTimer()`, and `self:CustomOnLeapAttack_AfterStartTimer()` --> `self:OnLeapAttack(status, enemy)`
+  - Merged `self:CustomOnLeapAttack_BeforeChecks()`, `self:CustomOnLeapAttack_AfterChecks()`, and `self:CustomOnLeapAttack_Miss()` --> `self:OnLeapAttackExecute(status, statusData)`
+  - Merged `self.NextMoveRandomlyWhenShootingTime1` and `self.NextMoveRandomlyWhenShootingTime2` --> `self.Weapon_StrafeCooldown`
+  - Merged `self.NextMoveOrHideOnDamageByEnemy1` and `self.NextMoveOrHideOnDamageByEnemy2` --> `self.CombatDamageResponse_Cooldown`
+  - Merged `self.MeleeAttackDSPSoundUseDamage` and `self.MeleeAttackDSPSoundUseDamageAmount` --> `self.MeleeAttackDSPLimit`
+  - Merged `self.HasBeforeRangeAttackSound`, and `self.HasRangeAttackSound` --> `self.HasRangeAttackSounds`
+  - Merged `self.HasMedicSounds_BeforeHeal`, `self.HasMedicSounds_AfterHeal` and `self.HasMedicSounds_ReceiveHeal` --> `self.HasMedicSounds`
+  - Merged `self.GuardingPosition`, and `self.GuardingDirection` --> `self.GuardData`
+  - Merged `self.GeneralSoundPitch1` and `self.GeneralSoundPitch2` --> `self.MainSoundPitch`
+  - Merged `self.HasOnDangerSightSounds` and `self.HasOnGrenadeSightSounds` --> `self.HasDangerSightSounds`
+  - Merged `self.OnDangerSightSoundChance` and `self.OnGrenadeSightSoundChance` --> `self.DangerSightSoundChance`
+  - Merged `self.OnDangerSightSoundLevel` and `self.OnGrenadeSightSoundLevel` --> `self.DangerSightSoundLevel`
+  - Merged `self.OnDangerSightSoundPitch` and `self.OnGrenadeSightSoundPitch` --> `self.DangerSightSoundPitch`
+  - Merged `self.HasHealthRegeneration`, `self.HealthRegenerationAmount`, `self.HealthRegenerationDelay`, and `self.HealthRegenerationResetOnDmg` --> `self.HealthRegenParams`
+  - Merged `self.Medic_Status`, `self.Medic_Target`, `self.Medic_PropEnt`, and `self.Medic_NextHealT` --> `self.MedicData`
+  - Renamed all the existing timers
+  - Removed `ent` parameter from `self:OnFireBullet()` as it was pointless since `ent` is `self`
+  - Removed `interruptible`, `useDuration`, `duration`, `playbackRate` parameters from `self:PlaySequence()`
+  - Deprecated: `self:VJ_GetNearestPointToEntity()`, `self:VJ_GetNearestPointToEntityDistance()`, `self:FaceCertainEntity()`, `self:FaceCertainPosition()`, `self:BusyWithActivity()`, `self:IsBusyWithBehavior()`, `self:DoRelationshipCheck()`, `self:VJ_CheckAllFourSides()`
+  - Removed: `self:MultipleLeapAttacks()`, `self:MultipleRangeAttacks()`, `self:MultipleMeleeAttacks()`, `self:CustomOnDamageByPlayer()`, `self:SetSightDistance()`, `self:CustomOnCondition()`, `self:CustomOnIsJumpLegal()`, `self:GetDynamicOrigin()`, `self:CustomOnFollowPlayer()`, `self:CustomOnUnFollowPlayer()`, `self:CustomOnChangeMovementType()`, `self:CustomOnWorldShakeOnMove()`, `self:CustomOnDropWeapon_AfterWeaponSpawned()`, `self:IdleDialogueAnswerSoundCode()`, `self:RunAIMoveJump()`, `self:VJ_SetSchedule(schedID)`, `self:VJ_Controller_InitialMessage()`, `self:CustomOnFootStepSound_Run()`, `self:CustomOnFootStepSound_Walk()`, `self:CustomOnChangeActivity(newAct)`, `self:ThrowGrenadeCode()`, `self:CustomOnGrenadeAttack_BeforeStartTimer()`, `self:CustomOnGrenadeAttack_SpawnPosition()`, `self:CustomOnWeaponReload_AfterRanToCover()`, `self:CustomOnGrenadeAttack_ThrowVelocity()`, `self:CustomOnGrenadeAttack_OnThrow()`, `self:StopAllCommonSpeechSounds()`, `self:VJ_GetNearestPointToVector()`, `self:DoRunCode_OnFinish()`, `self:DoRunCode_OnFail()`, `self:SetInitializeCapabilities()`, `self:WeaponAimPoseParameters()`, `self:CustomRareDropsOnDeathCode(dmginfo, hitgroup)`, `self:SetNearestPointToEntityPosition()`, `self:VJ_TASK_GOTO_PLAYER()`, `self:CustomOnDraw()`, `self:Controller_IntMsg()`, `self:SetMeleeAttackDamagePosition()`, `self:CustomOnSchedule()`, `self:SetIdleAnimation()`, `self:TranslateToWeaponAnim()`, `self:DoWeaponAttackMovementCode()`, `self:SetupWeaponHoldTypeAnims()`, `self:CustomOnSetupWeaponHoldTypeAnims()`, `self:IdleDialogueFindEnt()`, `self:PlayGibOnDeathSounds()`, `self:CustomGibOnDeathSounds()`, `self.AnimTbl_IdleStand`, `self.AnimTbl_Walk`, `self.AnimTbl_Run`, `self.WeaponAnimTranslations`, `self.AnimTbl_WeaponAim`, `self.CurrentIdleAnimation`, `self.PlayingAttackAnimation`, `self.DropWeaponOnDeathAttachment`, `self.TheDroppedWeapon`, `self.HasEntitiesToNoCollide`, `self.BloodPoolSize`, `self.GetNumberOfTasks`, `VJ_PlayingSequence`, `self.VJ_PlayingInterruptSequence`, `self.CallForHelpAnimationPlayBackRate`, `self.CallForHelpAnimationDelay`, `self.NextIdleStandTime`, `self.FlinchAnimationDecreaseLengthAmount`, `self.CurIdleStandMove`, `self.SoundTrackFadeOutTime`, `self.GrenadeAttackAnimationStopAttacks`, `self.GrenadeAttackAnimationStopAttacksTime`, `self.WeaponReloadAnimationDecreaseLengthAmount`, `self.FacingStatus`, `self.WeaponUseEnemyEyePos`, `self.HasLostWeaponSightAnimation`, `self.DisableSelectSchedule`, `self.Stationary_UseNoneMoveType`, `self.HasHull`, `self.DisableInitializeCapabilities`, `self.HullSizeNormal`, `self.WeaponReloadAnimationDelay`, `self.ThrowingGrenade`, `self.LeapAttacking`, `self.RangeAttacking`, `self.MeleeAttacking`, `self.AnimTbl_AlertFriendsOnDeath`, `self.WeaponInventory_AntiArmor`, `self.WeaponInventory_Melee`, `self.DeathCorpseSetBodyGroup`, `self.DeathCorpseBodyGroup`, `self.AnimTbl_ScaredBehaviorStand`, `self.AnimTbl_ScaredBehaviorMovement`, `self.MeleeAttackAnimationAllowOtherTasks`, `self.AnimTbl_ShootWhileMovingRun`, `self.AnimTbl_ShootWhileMovingWalk`, `self.WeaponReloadAnimationFaceEnemy`, `self.HasWeaponBackAway`, `self.AlertSounds_OnlyOnce`, `self.UnFollowPlayerPitch`, `self.UnFollowPlayerSoundChance`, `self.UnFollowPlayerSoundLevel`, `self.HasFollowPlayerSounds_Follow`, `self.HasFollowPlayerSounds_UnFollow`, `self.NextSoundTime_WeaponReload`, `self.BeforeMeleeAttackSounds_WaitTime`, `self.DisableMakingSelfEnemyToNPCs`, `self.FindEnemy_UseSphere`, `self.AnimationPlaybackRate`, `self.CallForHelpStopAnimations`, `self.CallForHelpStopAnimationsTime`, `self.AnimTbl_CallForBackUpOnDamageTime`, `self.DisableFootStepOnWalk`, `self.DisableFootStepOnRun`, `self.NextSoundTime_OnGrenadeSight`, `self.NextSoundTime_OnDangerSight`, `self.NextSoundTime_DamageByPlayer`, `self.Immune_Physics`, `self.DeathCorpseSkin`, `self.RangeUseAttachmentForPos`, `self.RangeUseAttachmentForPosID`, `self.RangeAttackPos_Up`, `self.RangeAttackPos_Forward`, `self.RangeAttackPos_Right`, `self.LeapAttackVelocityForward`, `self.LeapAttackVelocityUp`, `self.LeapAttackVelocityRight`, `self.HasWorldShakeOnMove`, `self.WorldShakeOnMoveAmplitude`, `self.WorldShakeOnMoveRadius`, `self.WorldShakeOnMoveDuration`, `self.WorldShakeOnMoveFrequency`, `self.ImmuneDamagesTable`, `self.GibOnDeathDamagesTable`, `self.DeathCorpseFadeTime`, `self.BecomeEnemyToPlayerLevel`, `self.FollowingPlayer`, `self.VJ_AddCertainEntityAsEnemy`, `self.VJ_AddCertainEntityAsFriendly`, `self.AngerLevelTowardsPlayer`, `self.NextFollowUpdateT`, `self.NextCallForHelpSoundT`, `self.NextSoundTime_Pain`, `self.Weapon_DoingCrouchAttackT`, `self.DoingWeaponAttack`, `self.DoingWeaponAttack_Standing`, `self.DoingWeaponOcclusionDelay`, `self.WeaponAttackAnimIsAim`, `self.NextNoWeaponT`, `self.NextWeaponReloadSoundT`, `self.PlayerFriendly`, `self.IdleDialogueAnswerSoundPitch`, `self.IdleDialogueAnswerSoundLevel`, `self.Passive_NextRunOnDamageTime`, `self.Passive_NextRunOnTouchTime`, `self.Passive_AlliesRunOnDamageDistance`, `self.HasSetSolid`, `self.HasCallForHelpAnimation`, `self.Medic_DisableAnimation`, `self.DisableAnimTbl_CallForBackUpOnDamage`, `self.NoChaseAfterCertainRange_Type`, `self.BringFriendsOnDeath`, `self.BringFriendsOnDeathDistance`, `self.BringFriendsOnDeathLimit`, `self.AlertFriendsOnDeath`, `self.AlertFriendsOnDeathDistance`, `self.AlertFriendsOnDeathLimit`, `self.NextMoveAfterFlinchTime`, `self.CallForBackUpOnDamageLimit`, `self.MoveOrHideOnDamageByEnemy_OnlyMove`, `self.HideOnUnknownDamage`, `self.DisableTakeDamageFindEnemy`, `self.Passive_RunOnDamage`, `self.CallForBackUpOnDamageDistance`, `self.FollowUpdateTime`, `self.DisableWeaponFiringGesture`, `self.DisableGrenadeAttackAnimation`, `self.DisableMeleeAttackAnimation`, `self.DisableRangeAttackAnimation`, `self.DisableLeapAttackAnimation`, `self.GrenadeAttackAnimationDelay`, `self.MeleeAttackAnimationDelay`, `self.LeapAttackAnimationDelay`, `self.NextAnyAttackTime_Melee_DoRand`, `self.NextMeleeAttackTime_DoRand`, `self.NextAnyAttackTime_Leap_DoRand`, `self.NextLeapAttackTime_DoRand`, `self.NextRangeAttackTime_DoRand`, `self.NextAnyAttackTime_Range_DoRand`, `self.MeleeAttackSlowPlayerSoundFadeOutTime`, `self.HasDamageByPlayer`, `self.DamageByPlayerTime`, `self.NextDamageByPlayerT`, `self.DisableDefaultRangeAttackCode`, `self.RangeAttackAnimationStopMovement`
+  - Removed timers: `timer_act_playingattack`, `timer_act_seqreset`
+- Weapon Base:
+  - Added: `self:SetDrawWorldModel(bool)`, `self:GetDrawWorldModel()`, `self.ReplacementWeapon`
+  - `self.Primary.TakeAmmo` now works for both NPCs and players
+  - Removed network variable `VJ_CurBulletPos`, instead use `self:GetBulletPos()`
+  - Removed network variable `VJ_WorldModel_Invisible`, instead use the new world model functions
+  - Removed: `self:CustomOnNPC_ServerThink()`, `self:CustomOnIdle()`, `self:CustomOnPrimaryAttackEffects(owner)`, `self.NPC_SecondaryFirePerforming`, `self.WorldModel_NoShadow`, `self.WorldModel_Invisible`
+- Spawner Base:
+  - Now sets the creator of the spawned entities to the player that created the spawner
+  - Renamed `self.VJBaseSpawnerDisabled` --> `self.PauseSpawning`
+  - Renamed `self.TimedSpawn_Time` --> `self.RespawnCooldown`
+  - Removed: `self:DoSingleSpawn()`, `self:CustomOnInitialize_AfterNPCSpawn()`, `self:CustomOnThink_AfterAliveChecks()`, `self:PlayIdleSound()`, `self:PlaySpawnEntitySound()`, `self.HasIdleSounds`, `self.HasSpawnEntitySound`, `self.OverrideDisableOnSpawn`, `self.TimedSpawn_OnlyOne`
+- Projectile Base:
+  - Added: `self:PlaySound(sdSet)`, `self:Destroy(data, phys)`, `self.CollisionDecal`, `self.CollisionBehavior`, `self.ProjectileType`, `self.CollisionFilter`
+  - Renamed `self:DeathEffects(data, phys)` --> `self:OnDestroy(data, phys)`
+  - Renamed `self:CustomOnPhysicsCollide(data, phys)` --> `self:OnCollision(data, phys)`
+  - Renamed `self:CustomOnCollideWithoutRemove(data, phys)` --> `self:OnCollisionPersist(data, phys)`
+  - Renamed `self:CustomOnTakeDamage(dmginfo)` --> `self:OnDamaged(dmginfo)`
+  - Renamed `self.DelayedRemove` --> `self.RemoveDelay`
+  - Merged `self:CustomOnDoDamage(data, phys, hitEnts)` and `self:CustomOnDoDamage_Direct(data, phys, hitEnt)` --> `self:OnDealDamage(data, phys, hitEnts)`
+  - Deprecated: `self:OnCollideSoundCode()`, `self:SetDeathVariablesTrue(data, phys, runOnDestroy)`
+  - Removed: `self.PhysicsInitType`, `self.MoveType`, `self.CollideCodeWithoutRemoving`, `self.MoveCollideType`, `self.CollisionGroupType`, `self.RemoveOnHit`, `self.PaintDecalOnDeath`, `self.PaintDecalOnCollide`, `self.CollideCodeWithoutRemoving`, `self.NextCollideWithoutRemove`, `self.RemoveOnHit`, `self.SolidType`, `self.DecalTbl_DeathDecals`, `self.DecalTbl_OnCollideDecals`, `self:CustomOnInitializeBeforePhys()`, `self:CustomPhysicsObjectOnInitialize(phys)`, `self:PlayIdleSound()`, `self:StartupSoundCode()`, `self:OnRemoveSoundCode()`
+- NPC Controller:
+  - Added: `self.VJC_Bullseye_RefreshPos`, `self.VJC_NPC_CanTurn`, `self.VJC_Player_CanChatMessage`
+  - Added `keyPressed` parameter to `self:OnStopControlling()`
+  - Renamed player tag `self.IsControlingNPC` --> `self.VJ_IsControllingNPC`
+  - Removed: `self:CustomOnSetControlledNPC()`, `self:CustomOnRemove()`
+- Revamped tags:
+  - Replaced the following global enums with variables:
+    - `VJ_TAG_HEALING` --> `self.VJ_ST_Healing`
+    - `VJ_TAG_EATING` --> `self.VJ_ST_Eating`
+    - `VJ_TAG_BEING_EATEN` --> `self.VJ_ST_BeingEaten`
+    - `VJ_TAG_SD_PLAYING_MUSIC` --> `self.VJ_SD_PlayingMusic`
+    - `VJ_TAG_HEADCRAB` --> `self.VJ_ID_Headcrab`
+    - `VJ_TAG_POLICE` --> `self.VJ_ID_Police`
+    - `VJ_TAG_CIVILIAN` --> `self.VJ_ST_Healing`
+    - `VJ_TAG_TURRET` --> `self.VJ_ID_Turret`
+    - `VJ_TAG_VEHICLE` --> `self.VJ_ID_Vehicle`
+    - `VJ_TAG_AIRCRAFT` --> `self.VJ_ID_Aircraft`
+  - Added: `self.IsVJBaseBullseye`, `self.IsVJBaseProjectile`, `self.VJ_ID_Living`, `self.VJ_ID_Destructible`, `self.VJ_ID_Healable`
+  - Renamed `self.IsVJBase_Gib` --> `self.IsVJBaseCorpse_Gib`
+  - Renamed `self.VJ_IsHugeMonster` --> `self.VJ_ID_Boss`
+  - Renamed `self.VJ_IsDetectableDanger` --> `self.VJ_ID_Danger`
+  - Renamed `self.VJ_IsDetectableGrenade` --> `self.VJ_ID_Grenade`
+  - Renamed `self.VJ_IsPickupableDanger` --> `self.VJ_ID_Grabbable`
+  - Renamed `self.VJ_IsPickedUpDanger` --> `self.VJ_ST_Grabbed`
+  - Renamed `self.VJ_AddEntityToSNPCAttackList` --> `self.VJ_ID_Attackable`
+  - Renamed `self.VJ_LastInvestigateSd` --> `self.VJ_SD_InvestTime`
+  - Renamed `self.VJ_LastInvestigateSdLevel` --> `self.VJ_SD_InvestLevel`
+  - Removed: `self:VJTags_Add()`, `self.VJTags`, `VJ_TAG_VJ_FRIENDLY`
