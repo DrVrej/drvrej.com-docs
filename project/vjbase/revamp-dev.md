@@ -1,46 +1,46 @@
 ## Globals & Misc
-- Added:
-  - `VJ.GetMoveVelocity(ent)`
-  - `VJ.GetMoveDirection(ent, ignoreZ)`
-  - `VJ.TraceDirections(ent, trType, maxDist, requireFullDist, returnAsDict, numDirections, excludeForward, excludeBack, excludeLeft, excludeRight)`
-  - `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`
-  - `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
-- Added AI tasks:
-  - `TASK_VJ_PLAY_ACTIVITY`
-  - `TASK_VJ_PLAY_SEQUENCE`
-- Added to entity meta table:
-  - `ENTITY:CanBeEngaged(otherEnt, distance)`,
-  - `ENTITY:HandlePerceivedRelationship(otherEnt, distance, isFriendly)`
-- Added `VJ.CalculateTrajectory()` which is a newer version of `ENTITY:CalculateProjectile()`
-- Added global enum:
-  - `D_VJ_INTEREST`
-  - `VJ.DMG_*`
-  - `VJ.ALERT_STATE_*`
-  - `VJ.DANGER_TYPE_*`
-  - `VJ.WEP_ATTACK_STATE_*`
-  - `VJ.MEM_*`
-  - `VJ.ANIM_TYPE_*`
-  - `VJ.BLOOD_COLOR_*`
-  - `VJ.PROJ_TYPE_*`
-  - `VJ.PROJ_COLLISION_*`
-  - `VJ.KILLICON_*`
-  - `VJ.COLOR_*`
-- Added global object `VJ_RecipientFilter`
-- Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
-- Spawner Base now uses Vector instead of a table for `SpawnPosition`
-- Fixed Spawner Base changing its position on spawn, in some cases it caused respawned NPCs to be created stuck inside the map or another entity
-- Deprecated: `ENTITY:CalculateProjectile()`
-- Renamed module `ai_vj_schedule` --> `vj_ai_schedule`
-- Renamed module `ai_vj_task` --> `vj_ai_task`
-- Removed unused module `sound_vj_track`
-- Removed `self:CustomOnInitialize()` from `prop_vj_animatable`
-- Removed `VJ_CreateBoneFollower` and the associated entity `obj_vj_bonefollower`
-- Removed global functions:
-  - `VJ_PICKRANDOMTABLE`
-  - `VJ_GetSequenceName`
-  - `VJ_FindInCone`
-  - `VJ_RemoveAnimExtensions`
-  - `GetTaskList`
+  - Added:
+    - `VJ.GetMoveVelocity(ent)`
+    - `VJ.GetMoveDirection(ent, ignoreZ)`
+    - `VJ.TraceDirections(ent, trType, maxDist, requireFullDist, returnAsDict, numDirections, excludeForward, excludeBack, excludeLeft, excludeRight)`
+    - `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`
+    - `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
+  - Added AI tasks:
+    - `TASK_VJ_PLAY_ACTIVITY`
+    - `TASK_VJ_PLAY_SEQUENCE`
+  - Added to entity meta table:
+    - `ENTITY:CanBeEngaged(otherEnt, distance)`,
+    - `ENTITY:HandlePerceivedRelationship(otherEnt, distance, isFriendly)`
+  - Added `VJ.CalculateTrajectory()` which is a newer version of `ENTITY:CalculateProjectile()`
+  - Added global enum:
+    - `D_VJ_INTEREST`
+    - `VJ.DMG_*`
+    - `VJ.ALERT_STATE_*`
+    - `VJ.DANGER_TYPE_*`
+    - `VJ.WEP_ATTACK_STATE_*`
+    - `VJ.MEM_*`
+    - `VJ.ANIM_TYPE_*`
+    - `VJ.BLOOD_COLOR_*`
+    - `VJ.PROJ_TYPE_*`
+    - `VJ.PROJ_COLLISION_*`
+    - `VJ.KILLICON_*`
+    - `VJ.COLOR_*`
+  - Added global object `VJ_RecipientFilter`
+  - Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
+  - Spawner Base now uses Vector instead of a table for `SpawnPosition`
+  - Fixed Spawner Base changing its position on spawn, in some cases it caused respawned NPCs to be created stuck inside the map or another entity
+  - Deprecated: `ENTITY:CalculateProjectile()`
+  - Renamed module `ai_vj_schedule` --> `vj_ai_schedule`
+  - Renamed module `ai_vj_task` --> `vj_ai_task`
+  - Removed unused module `sound_vj_track`
+  - Removed `self:CustomOnInitialize()` from `prop_vj_animatable`
+  - Removed `VJ_CreateBoneFollower` and the associated entity `obj_vj_bonefollower`
+  - Removed global functions:
+    - `VJ_PICKRANDOMTABLE`
+    - `VJ_GetSequenceName`
+    - `VJ_FindInCone`
+    - `VJ_RemoveAnimExtensions`
+    - `GetTaskList`
 ## NPC Bases
   - Added:
     - `self:CheckRelationship()`
@@ -463,7 +463,7 @@
   - Removed timers:
     - `timer_act_playingattack`
     - `timer_act_seqreset`
-## Weapon Base:
+## Weapon Base
   - Added:
     - `self:SetDrawWorldModel(bool)`
     - `self:GetDrawWorldModel()`
@@ -478,7 +478,7 @@
     - `self.NPC_SecondaryFirePerforming`
     - `self.WorldModel_NoShadow`
     - `self.WorldModel_Invisible`
-## Spawner Base:
+## Spawner Base
   - Now sets the creator of the spawned entities to the player that created the spawner
   - Renamed `self.VJBaseSpawnerDisabled` --> `self.PauseSpawning`
   - Renamed `self.TimedSpawn_Time` --> `self.RespawnCooldown`
@@ -492,7 +492,7 @@
     - `self.HasSpawnEntitySound`
     - `self.OverrideDisableOnSpawn`
     - `self.TimedSpawn_OnlyOne`
-## Projectile Base:
+## Projectile Base
   - Added:
     - `self:PlaySound(sdSet)`
     - `self:Destroy(data, phys)`
@@ -529,7 +529,7 @@
     - `self:PlayIdleSound()`
     - `self:StartupSoundCode()`
     - `self:OnRemoveSoundCode()`
-## NPC Controller:
+## NPC Controller
   - Added:
     - `self.VJC_Bullseye_RefreshPos`
     - `self.VJC_NPC_CanTurn`
