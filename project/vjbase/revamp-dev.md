@@ -539,8 +539,8 @@
   - Removed:
     - `self:CustomOnSetControlledNPC()`
     - `self:CustomOnRemove()`
-- Revamped tags:
-  - Replaced the following global enums with variables:
+## Entity Tags
+  - Replaced global enums with entity variables:
     - `VJ_TAG_HEALING` --> `self.VJ_ST_Healing`
     - `VJ_TAG_EATING` --> `self.VJ_ST_Eating`
     - `VJ_TAG_BEING_EATEN` --> `self.VJ_ST_BeingEaten`
