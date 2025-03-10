@@ -14,7 +14,7 @@
 - Removed unused module `sound_vj_track`
 - Removed `self:CustomOnInitialize()` from `prop_vj_animatable`
 - Removed `VJ_CreateBoneFollower` and the associated entity `obj_vj_bonefollower`
-- NPC Bases:
+## NPC Bases
   - Added: `self:CheckRelationship()`, `self:SetRelationshipMemory(ent, memoryName, memoryValue)`, `self:OnFollow(status, ent)`, `self:SetTurnTarget(target, faceTime, stopOnFace, visibleOnly)`, `self:GetAimPosition(target, aimOrigin, predictionRate, projectileSpeed)`, `self:GetAimSpread(target, goalPos, modifier)`, `self:SetPhysicsDamageScale(scale)`, `self:IsScheduleFinished(schedule)`, `self:UpdateAnimationTranslations(wepHoldType)`, `self:SetAnimationTranslations(wepHoldType)`, `self:ResolveAnimation(tbl)`, `self.JumpParams`, `self.AnimationTranslations`, `self.CurrentAttackAnimationTime`, `self.LastAnimationType`, `self.CanReceiveOrders`, `self.GibOnDeathFilter`, `self.DeathAllyResponse`, `self.DeathAllyResponse_MoveLimit`, `self.DamageResponse`
   - Added (Humans): `self:OnDangerDetected(dangerType, data)`, `self:OnGrenadeAttack(status, overrideEnt, landDir)`, `self:OnGrenadeAttackExecute(status, grenade, overrideEnt, landDir, landingPos)` `self.Weapon_AimTurnDiff`, `self.GrenadeAttackBone`, `self.NextAnyAttackTime_Grenade`, `self.WeaponAttackState`
   - Added (Creatures): `self.EatCooldown`
