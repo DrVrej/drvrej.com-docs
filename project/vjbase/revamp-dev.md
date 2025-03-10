@@ -1,6 +1,3 @@
-__NOTE:__ Most "VJ_" functions and enums have all been converted to the VJ library, I recommend updating them!   
-__NOTE:__ Most `CustomOn*` functions have been renamed & merged make sure to check the corresponding base file for the new names!   
-__NOTE:__ Most of the removed/renamed functions and variables have backwards compatibility though it's highly recommended to update them!   
 - Added: `VJ.GetMoveVelocity(ent)`, `VJ.GetMoveDirection(ent, ignoreZ)`, `VJ.TraceDirections(ent, trType, maxDist, requireFullDist, returnAsDict, numDirections, excludeForward, excludeBack, excludeLeft, excludeRight)`, `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`, `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
 - Added AI tasks: `TASK_VJ_PLAY_ACTIVITY`, `TASK_VJ_PLAY_SEQUENCE`
 - Added to entity meta table: `ENTITY:CanBeEngaged(otherEnt, distance)`, `ENTITY:HandlePerceivedRelationship(otherEnt, distance, isFriendly)`
