@@ -5,6 +5,7 @@
     - `VJ.TraceDirections(ent, trType, maxDist, requireFullDist, returnAsDict, numDirections, excludeForward, excludeBack, excludeLeft, excludeRight)`
     - `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`
     - `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
+    - `VJ.AddKillIcon(class, name, texture, data)`
   - Added AI tasks:
     - `TASK_VJ_PLAY_ACTIVITY`
     - `TASK_VJ_PLAY_SEQUENCE`
@@ -28,6 +29,7 @@
   - Added global objects:
       - `VJ_RecipientFilter`
       - `VJ_Nodegraph`
+  - Added `vj_ai_nodegraph` module
   - Moved `ENTITY:DecideAnimationLength()` from entity meta table to VJ library --> `VJ.AnimDurationEx(ent, anim, override, decrease)`
   - Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
   - Spawner Base now uses Vector instead of a table for `SpawnPosition`
@@ -35,6 +37,7 @@
   - Deprecated: `ENTITY:CalculateProjectile()`
   - Renamed module `ai_vj_schedule` --> `vj_ai_schedule`
   - Renamed module `ai_vj_task` --> `vj_ai_task`
+  - Renamed `VJ.AddAddonProperty` --> `VJ.AddPlugin`
   - Removed unused module `sound_vj_track`
   - Removed `self:CustomOnInitialize()` from `prop_vj_animatable`
   - Removed `VJ_CreateBoneFollower` and the associated entity `obj_vj_bonefollower`
@@ -507,7 +510,9 @@
     - `self.WorldModel_NoShadow`
     - `self.WorldModel_Invisible`
 ## Spawner Base
+  - Added a queue system
   - Now sets the creator of the spawned entities to the player that created the spawner
+  - Renamed `self:CustomOnEntitySpawn()` --> `self:OnSpawnEntity()`
   - Renamed `self.VJBaseSpawnerDisabled` --> `self.PauseSpawning`
   - Renamed `self.TimedSpawn_Time` --> `self.RespawnCooldown`
   - Removed:
@@ -522,22 +527,28 @@
     - `self.TimedSpawn_OnlyOne`
 ## Projectile Base
   - Added:
+    - `self:InitPhys()`
     - `self:PlaySound(sdSet)`
     - `self:Destroy(data, phys)`
     - `self.CollisionDecal`
     - `self.CollisionBehavior`
     - `self.ProjectileType`
     - `self.CollisionFilter`
-  - Renamed `self:DeathEffects(data, phys)` --> `self:OnDestroy(data, phys)`
   - Renamed `self:CustomOnPhysicsCollide(data, phys)` --> `self:OnCollision(data, phys)`
   - Renamed `self:CustomOnCollideWithoutRemove(data, phys)` --> `self:OnCollisionPersist(data, phys)`
   - Renamed `self:CustomOnTakeDamage(dmginfo)` --> `self:OnDamaged(dmginfo)`
+  - Renamed `self:DeathEffects(data, phys)` --> `self:OnDestroy(data, phys)`
   - Renamed `self.DelayedRemove` --> `self.RemoveDelay`
   - Merged `self:CustomOnDoDamage(data, phys, hitEnts)` and `self:CustomOnDoDamage_Direct(data, phys, hitEnt)` --> `self:OnDealDamage(data, phys, hitEnts)`
   - Deprecated:
     - `self:OnCollideSoundCode()`
     - `self:SetDeathVariablesTrue(data, phys, runOnDestroy)`
   - Removed:
+    - `self:CustomOnInitializeBeforePhys()`
+    - `self:CustomPhysicsObjectOnInitialize(phys)`
+    - `self:PlayIdleSound()`
+    - `self:StartupSoundCode()`
+    - `self:OnRemoveSoundCode()`
     - `self.PhysicsInitType`
     - `self.MoveType`
     - `self.CollideCodeWithoutRemoving`
@@ -552,17 +563,15 @@
     - `self.SolidType`
     - `self.DecalTbl_DeathDecals`
     - `self.DecalTbl_OnCollideDecals`
-    - `self:CustomOnInitializeBeforePhys()`
-    - `self:CustomPhysicsObjectOnInitialize(phys)`
-    - `self:PlayIdleSound()`
-    - `self:StartupSoundCode()`
-    - `self:OnRemoveSoundCode()`
 ## NPC Controller
   - Added:
     - `self.VJC_Bullseye_RefreshPos`
     - `self.VJC_NPC_CanTurn`
     - `self.VJC_Player_CanChatMessage`
   - Added `keyPressed` parameter to `self:OnStopControlling()`
+  - Renamed `self:CustomOnKeyPressed(key)` --> `self:CustomOnKeyPressed(key)`
+  - Renamed `self:CustomOnKeyBindPressed(key)` --> `self:OnKeyBindPressed(key)`
+  - Renamed `self:CustomOnStopControlling(keyPressed)` --> `self:OnStopControlling(keyPressed)`
   - Renamed player tag `self.IsControlingNPC` --> `self.VJ_IsControllingNPC`
   - Removed:
     - `self:CustomOnSetControlledNPC()`
