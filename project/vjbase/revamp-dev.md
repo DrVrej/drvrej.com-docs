@@ -25,7 +25,10 @@
     - `VJ.PROJ_COLLISION_*`
     - `VJ.KILLICON_*`
     - `VJ.COLOR_*`
-  - Added global object `VJ_RecipientFilter`
+  - Added global objects:
+      - `VJ_RecipientFilter`
+      - `VJ_Nodegraph`
+  - Moved `ENTITY:DecideAnimationLength()` from entity meta table to VJ library --> `VJ.AnimDurationEx(ent, anim, override, decrease)`
   - Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
   - Spawner Base now uses Vector instead of a table for `SpawnPosition`
   - Fixed Spawner Base changing its position on spawn, in some cases it caused respawned NPCs to be created stuck inside the map or another entity
@@ -41,6 +44,10 @@
     - `VJ_FindInCone`
     - `VJ_RemoveAnimExtensions`
     - `GetTaskList`
+## All Bases
+  - Renamed `self:CustomOnPreInitialize()` --> `self:PreInit()`
+  - Renamed `self:CustomOnInitialize()` --> `self:Init()`
+  - Renamed `self:CustomOnThink()` --> `self:OnThink()`
 ## NPC Bases
   - Added:
     - `self:CheckRelationship()`
@@ -109,6 +116,23 @@
     - `self.AnimTbl_DamageAllyResponse`
   - `self.CanFlinch` now uses `false`, `true`, and `"DamageTypes"` instead of numbers
   - `self.FlinchHitGroupMap` can now accept a non-table value for the hitgroup name
+  - Renamed `self:CustomOnThink_AIEnabled()` --> `self:OnThinkActive()`
+  - Renamed `self:CustomOnAcceptInput()` --> `self:OnInput()`
+  - Renamed `self:CustomOnHandleAnimEvent()` --> `self:OnAnimEvent()`
+  - Renamed `self:CustomOnTakeDamage_OnBleed()` --> `self:OnBleed()`
+  - Renamed `self:CustomOnAlert()` --> `self:OnAlert()`
+  - Renamed `self:CustomOnInvestigate()` --> `self:OnInvestigate()`
+  - Renamed `self:CustomOnCallForHelp()` --> `self:OnCallForHelp()`
+  - Renamed `self:CustomOnPlayerSight()` --> `self:OnPlayerSight()`
+  - Renamed `self:CustomOn_PoseParameterLookingCode()` --> `self:OnUpdatePoseParamTracking()`
+  - Renamed `self:CustomOnDeath_AfterCorpseSpawned()` --> `self:OnCreateDeathCorpse()`
+  - Renamed `self:CustomOnDoKilledEnemy()` --> `self:OnKilledEnemy()`
+  - Renamed `self:CustomOnTouch()` --> `self:OnTouch()`
+  - Renamed `self:CustomOnWeaponReload()` --> `self:OnWeaponReload()`
+  - Renamed `self:CustomOnWeaponAttack()` --> `self:OnWeaponAttack()`
+  - Renamed `self:CustomOnMoveRandomlyWhenShooting()` --> `self:OnWeaponStrafe()`
+  - Renamed `self:CustomOnDropWeapon()` --> `self:OnDeathWeaponDrop()`
+  - Renamed `self:CustomOnFootStepSound()` --> `self:OnFootstepSound()`
   - Renamed `self:FootStepSoundCode()` --> `self:PlayFootstepSound()`
   - Renamed `self:VJ_DecideSoundPitch()` --> `self:GetSoundPitch()`
   - Renamed `self:VJ_DoSetEnemy()` --> `self:ForceSetEnemy()`
@@ -117,6 +141,7 @@
   - Renamed `self:OnCreateSound(sdFile)` --> `self:OnPlaySound(sdFile)`
   - Renamed `self:RangeAttackCode_OverrideProjectilePos(projectile)` --> `self:RangeAttackProjSpawnPos(projectile)`
   - Renamed `self:RangeAttackCode_GetShootPos(projectile)` --> `self:RangeAttackProjVelocity(projectile)`
+  - Renamed `self:GetMeleeAttackDamageOrigin()` --> `self:MeleeAttackTraceOrigin()`
   - Renamed `self:SetUpGibesOnDeath()` --> `self:HandleGibOnDeath()`
   - Renamed `self:MeleeAttackCode()` --> `self:ExecuteMeleeAttack()`
   - Renamed `self:RangeAttackCode()` --> `self:ExecuteRangeAttack()`
@@ -236,12 +261,15 @@
   - Renamed `self.MeleeAttackSlowPlayerSoundLevel` --> `self.MeleeAttackPlayerSpeedSoundLevel`
   - Renamed `self.PropAP_MaxSize` --> `self.PropInteraction_MaxScale`
   - Merged `self.AttackProps` and `self.PushProps` --> `self.PropInteraction`
-  - Merged `self:GetMeleeAttackDamageOrigin()` --> `self:MeleeAttackTraceOrigin()`
   - Merged `self:CustomOnMeleeAttack_BeforeStartTimer()`, and `self:CustomOnMeleeAttack_AfterStartTimer()` --> `self:OnMeleeAttack(status, enemy)`
   - Merged `self:CustomOnRangeAttack_BeforeStartTimer()`, and `self:CustomOnRangeAttack_AfterStartTimer()` --> `self:OnRangeAttack(status, enemy)`
   - Merged `self:CustomRangeAttackCode()`, `self:CustomRangeAttackCode_BeforeProjectileSpawn()`, and `self:CustomRangeAttackCode_AfterProjectileSpawn()` --> `self:OnRangeAttackExecute(status, enemy, projectile)`
   - Merged `self:CustomOnLeapAttackVelocityCode()`, `self:CustomOnLeapAttack_BeforeStartTimer()`, and `self:CustomOnLeapAttack_AfterStartTimer()` --> `self:OnLeapAttack(status, enemy)`
   - Merged `self:CustomOnLeapAttack_BeforeChecks()`, `self:CustomOnLeapAttack_AfterChecks()`, and `self:CustomOnLeapAttack_Miss()` --> `self:OnLeapAttackExecute(status, statusData)`
+  - Merged `self:CustomOnMedic_BeforeHeal()`, `self:CustomOnMedic_OnHeal()`, and `self:CustomOnMedic_OnReset()` --> `self:OnMedicBehavior(status, statusData)`
+  - Merged `self:CustomOnTakeDamage_BeforeImmuneChecks()`, `self:CustomOnTakeDamage_BeforeDamage()`, and `self:CustomOnTakeDamage_AfterDamage()` --> `self:OnDamaged(dmginfo, hitgroup, status)`
+  - Merged `self:CustomOnFlinch_BeforeFlinch()`, and `self:CustomOnFlinch_AfterFlinch()` --> `self:OnFlinch(dmginfo, hitgroup, status)`
+  - Merged `self:CustomOnInitialKilled()`, `self:CustomOnPriorToKilled()`, `self:CustomDeathAnimationCode()`, `self:CustomOnKilled()`, and `self:CustomOnDeath_BeforeCorpseSpawned()` --> `self:OnDeath(dmginfo, hitgroup, status)`
   - Merged `self.NextMoveRandomlyWhenShootingTime1` and `self.NextMoveRandomlyWhenShootingTime2` --> `self.Weapon_StrafeCooldown`
   - Merged `self.NextMoveOrHideOnDamageByEnemy1` and `self.NextMoveOrHideOnDamageByEnemy2` --> `self.CombatDamageResponse_Cooldown`
   - Merged `self.MeleeAttackDSPSoundUseDamage` and `self.MeleeAttackDSPSoundUseDamageAmount` --> `self.MeleeAttackDSPLimit`
