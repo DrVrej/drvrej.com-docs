@@ -1,18 +1,22 @@
 {
-  'class': {
-    'type': "string",
-    'description':
-"""
-The object class to use, common types: `prop_ragdoll`, `prop_physics`.
-  "},
-  'models': {
-    'type': "string | table",
-    'default': "nil",
-    'description':
-"""
- Model(s) to use, if it's a table then it will pick them randomly.
+  "name": "CreateExtraDeathCorpse",
+  "params": {
+    "class": {
+      "type": "string",
+      "description":
+        """
+        The object class to use, common types: `prop_ragdoll`, `prop_physics`.
+        """
+    },
+    "models": {
+      "type": "string | table",
+      "default": "nil",
+      "description":
+        """
+        Model(s) to use, if it's a table then it will pick them randomly.
 
-`\"None\"` = Doesn't set a model.
-"""
-  },
+        `\"None\"` = Doesn't set a model.
+        """
+    },
+  }
 }
