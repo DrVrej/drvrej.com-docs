@@ -1,8 +1,8 @@
-{
+{% set content = {
   "name": "CreateExtraDeathCorpse",
   "params": {
     "class": {
-      "type": "string",
+      "type": general.icon.func_parameter,
       "description":
         """
         The object class to use, common types: `prop_ragdoll`, `prop_physics`.
@@ -19,4 +19,4 @@
         """
     },
   }
-}
+} %}
