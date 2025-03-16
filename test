@@ -2,10 +2,10 @@
   "name": "CreateExtraDeathCorpse",
   "params": {
     "class": {
-      "type": general.icon.func_parameter,
+      "type": "string",
       "description":
         """
-        The object class to use, common types: `prop_ragdoll`, `prop_physics`.
+The object class to use, common types: `prop_ragdoll`, `prop_physics`.
         """
     },
     "models": {
@@ -13,9 +13,9 @@
       "default": "nil",
       "description":
         """
-        Model(s) to use, if it's a table then it will pick them randomly.
+Model(s) to use, if it's a table then it will pick them randomly.
 
-        `\"None\"` = Doesn't set a model.
+ `\"None\"` = Doesn't set a model.
         """
     },
   }
