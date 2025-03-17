@@ -1,22 +1,78 @@
 {% set content = {
   "name": "CreateExtraDeathCorpse",
-  "params": {
-    "class": {
-      "type": "string",
+  "type": DEFINITION_TYPE.FUNCTION,
+  "parent": "ENT",
+  "description":
+  "
+Creates a extra corpse entity, use this function to create extra corpse entities when the NPC is killed.
+  ",
+  "parameters": [
+    {
+      "name": "class",
+      "data_types": DATA_TYPE.STRING,
       "description":
-        """
+      "
 The object class to use, common types: `prop_ragdoll`, `prop_physics`.
-        """
+      "
     },
-    "models": {
-      "type": "string | table",
-      "default": "nil",
+    {
+      "name": "models",
+      "data_types": [DATA_TYPE.STRING, DATA_TYPE.TABLE],
+      "default": DATA_TYPE.NIL,
       "description":
-        """
+      "
 Model(s) to use, if it's a table then it will pick them randomly.
 
  `\"None\"` = Doesn't set a model.
-        """
+      "
     },
-  }
+    {
+      "name": "extraOptions",
+      "data_types": DATA_TYPE.TABLE,
+      "default": DATA_TYPE.NIL,
+      "description":
+      "
+Table that holds extra options to modify parts of the code.
+
+" ~ vj_gen_param({'name': 'Pos', 'data_types': DATA_TYPE.VECTOR}) ~ "   
+Sets the spawn position.
+
+" ~ vj_gen_param({'name': 'Ang', 'data_types': DATA_TYPE.ANGLE}) ~ "   
+Sets the spawn angle.
+
+" ~ vj_gen_param({'name': 'Vel', 'data_types': [DATA_TYPE.VECTOR, DATA_TYPE.STRING], 'default': '\"UseDamageForce\"'}) ~ "   
+Sets the velocity.
+
+" ~ vj_gen_param({'name': 'HasVel', 'data_types': DATA_TYPE.BOOLEAN, 'default': 'true'}) ~ "   
+If `false` then it won't set any velocity, allowing you to code your own in [customFunc](#customFunc(ent)).
+
+" ~ vj_gen_param({'name': 'ShouldFade', 'data_types': DATA_TYPE.BOOLEAN, 'default': 'false'}) ~ "   
+Should it fade away after certain time?
+
+" ~ vj_gen_param({'name': 'ShouldFadeTime', 'data_types': DATA_TYPE.NUMBER, 'default': '0'}) ~ "   
+How much time until the entity fades away.
+
+" ~ vj_gen_param({'name': 'RemoveOnCorpseDelete', 'data_types': DATA_TYPE.BOOLEAN, 'default': 'true'}) ~ "   
+Should the entity get removed if the corpse is removed?
+      "
+    },
+    {
+      "name": "customFunc(ent)",
+      "data_types": DATA_TYPE.FUNCTION,
+      "default": DATA_TYPE.NIL,
+      "description":
+      "
+Use this to edit the entity which is given as parameter `ent`.
+      "
+    },
+  ],
+  "returns": [
+    {
+      "data_types": DATA_TYPE.STRING,
+      "description":
+      "
+The model path that it created.
+      "
+    },
+  ],
 } %}
