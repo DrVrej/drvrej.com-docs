@@ -53,7 +53,7 @@
   - Renamed `self:CustomOnThink()` --> `self:OnThink()`
 ## NPC Bases
   - Added:
-    - `self:CheckRelationship()`
+    - `self:CheckRelationship(ent)`
     - `self:SetRelationshipMemory(ent, memoryName, memoryValue)`
     - `self:OnFollow(status, ent)`
     - `self:SetTurnTarget(target, faceTime, stopOnFace, visibleOnly)`
@@ -265,10 +265,11 @@
   - Renamed `self.PropAP_MaxSize` --> `self.PropInteraction_MaxScale`
   - Merged `self.AttackProps` and `self.PushProps` --> `self.PropInteraction`
   - Merged `self:CustomOnMeleeAttack_BeforeStartTimer()`, and `self:CustomOnMeleeAttack_AfterStartTimer()` --> `self:OnMeleeAttack(status, enemy)`
-  - Merged `self:CustomOnRangeAttack_BeforeStartTimer()`, and `self:CustomOnRangeAttack_AfterStartTimer()` --> `self:OnRangeAttack(status, enemy)`
+  - Merged `self:CustomAttackCheck_MeleeAttack()`, `self:CustomOnMeleeAttack_BeforeChecks()`, `self:CustomOnMeleeAttack_AfterChecks()`, and `self:CustomOnMeleeAttack_Miss()` --> `self:OnMeleeAttackExecute(status, ent, isProp)`
+  - Merged `self:CustomAttackCheck_RangeAttack()`, `self:CustomOnRangeAttack_BeforeStartTimer()`, and `self:CustomOnRangeAttack_AfterStartTimer()` --> `self:OnRangeAttack(status, enemy)`
   - Merged `self:CustomRangeAttackCode()`, `self:CustomRangeAttackCode_BeforeProjectileSpawn()`, and `self:CustomRangeAttackCode_AfterProjectileSpawn()` --> `self:OnRangeAttackExecute(status, enemy, projectile)`
-  - Merged `self:CustomOnLeapAttackVelocityCode()`, `self:CustomOnLeapAttack_BeforeStartTimer()`, and `self:CustomOnLeapAttack_AfterStartTimer()` --> `self:OnLeapAttack(status, enemy)`
-  - Merged `self:CustomOnLeapAttack_BeforeChecks()`, `self:CustomOnLeapAttack_AfterChecks()`, and `self:CustomOnLeapAttack_Miss()` --> `self:OnLeapAttackExecute(status, statusData)`
+  - Merged `self:CustomAttackCheck_LeapAttack()`, `self:CustomOnLeapAttackVelocityCode()`, `self:CustomOnLeapAttack_BeforeStartTimer()`, and `self:CustomOnLeapAttack_AfterStartTimer()` --> `self:OnLeapAttack(status, enemy)`
+  - Merged `self:CustomOnLeapAttack_BeforeChecks()`, `self:CustomOnLeapAttack_AfterChecks()`, and `self:CustomOnLeapAttack_Miss()` --> `self:OnLeapAttackExecute(status, ent)`
   - Merged `self:CustomOnMedic_BeforeHeal()`, `self:CustomOnMedic_OnHeal()`, and `self:CustomOnMedic_OnReset()` --> `self:OnMedicBehavior(status, statusData)`
   - Merged `self:CustomOnTakeDamage_BeforeImmuneChecks()`, `self:CustomOnTakeDamage_BeforeDamage()`, and `self:CustomOnTakeDamage_AfterDamage()` --> `self:OnDamaged(dmginfo, hitgroup, status)`
   - Merged `self:CustomOnFlinch_BeforeFlinch()`, and `self:CustomOnFlinch_AfterFlinch()` --> `self:OnFlinch(dmginfo, hitgroup, status)`
@@ -491,6 +492,7 @@
     - `self.NextDamageByPlayerT`
     - `self.DisableDefaultRangeAttackCode`
     - `self.RangeAttackAnimationStopMovement`
+    - `self.DisableDefaultMeleeAttackCode`
   - Removed timers:
     - `timer_act_playingattack`
     - `timer_act_seqreset`
