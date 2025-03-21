@@ -76,7 +76,8 @@
   - Added (Humans):
     - `self:OnDangerDetected(dangerType, data)`
     - `self:OnGrenadeAttack(status, overrideEnt, landDir)`
-    - `self:OnGrenadeAttackExecute(status, grenade, overrideEnt, landDir, landingPos)` `self.Weapon_AimTurnDiff`
+    - `self:OnGrenadeAttackExecute(status, grenade, overrideEnt, landDir, landingPos)`
+    - `self.Weapon_AimTurnDiff`
     - `self.GrenadeAttackBone`
     - `self.NextAnyAttackTime_Grenade`
     - `self.WeaponAttackState`
