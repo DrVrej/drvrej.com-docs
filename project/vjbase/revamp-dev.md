@@ -32,8 +32,7 @@
   - Added `vj_ai_nodegraph` module
   - Moved `ENTITY:DecideAnimationLength()` from entity meta table to VJ library --> `VJ.AnimDurationEx(ent, anim, override, decrease)`
   - Default Half-Life 1 & 2 NPCs now respect `self.AlliedWithPlayerAllies`
-  - Spawner Base now uses Vector instead of a table for `SpawnPosition`
-  - Fixed Spawner Base changing its position on spawn, in some cases it caused respawned NPCs to be created stuck inside the map or another entity
+  - Added `version` parameter to `VJ.AddPlugin`
   - Deprecated: `ENTITY:CalculateProjectile()`
   - Renamed module `ai_vj_schedule` --> `vj_ai_schedule`
   - Renamed module `ai_vj_task` --> `vj_ai_task`
@@ -514,10 +513,12 @@
     - `self.WorldModel_Invisible`
 ## Spawner Base
   - Added a queue system
+  - `SpawnPosition` in `self.EntitiesToSpawn` now takes a Vector instead of a table
   - Now sets the creator of the spawned entities to the player that created the spawner
   - Renamed `self:CustomOnEntitySpawn()` --> `self:OnSpawnEntity()`
   - Renamed `self.VJBaseSpawnerDisabled` --> `self.PauseSpawning`
   - Renamed `self.TimedSpawn_Time` --> `self.RespawnCooldown`
+  - Fixed position changing on spawn which sometimes caused respawned NPCs to be created stuck
   - Removed:
     - `self:DoSingleSpawn()`
     - `self:CustomOnInitialize_AfterNPCSpawn()`
