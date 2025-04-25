@@ -142,8 +142,8 @@
   - Renamed `self:DoChaseAnimation()` --> `self:MaintainAlertBehavior()`
   - Renamed `self:VJ_GetDifficultyValue()` --> `self:ScaleByDifficulty()`
   - Renamed `self:OnCreateSound(sdFile)` --> `self:OnPlaySound(sdFile)`
-  - Renamed `self:RangeAttackCode_OverrideProjectilePos(projectile)` --> `self:RangeAttackProjSpawnPos(projectile)`
-  - Renamed `self:RangeAttackCode_GetShootPos(projectile)` --> `self:RangeAttackProjVelocity(projectile)`
+  - Renamed `self:RangeAttackCode_OverrideProjectilePos(projectile)` --> `self:RangeAttackProjPos(projectile)`
+  - Renamed `self:RangeAttackCode_GetShootPos(projectile)` --> `self:RangeAttackProjVel(projectile)`
   - Renamed `self:GetMeleeAttackDamageOrigin()` --> `self:MeleeAttackTraceOrigin()`
   - Renamed `self:SetUpGibesOnDeath()` --> `self:HandleGibOnDeath()`
   - Renamed `self:MeleeAttackCode()` --> `self:ExecuteMeleeAttack()`
