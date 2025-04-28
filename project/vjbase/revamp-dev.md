@@ -63,6 +63,7 @@
     - `self:UpdateAnimationTranslations(wepHoldType)`
     - `self:SetAnimationTranslations(wepHoldType)`
     - `self:ResolveAnimation(tbl)`
+    - `self:MeleeAttackTraceDirection()`
     - `self.JumpParams`
     - `self.AnimationTranslations`
     - `self.CurrentAttackAnimationTime`
