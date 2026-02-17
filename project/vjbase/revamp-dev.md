@@ -557,14 +557,12 @@
     - `self.PhysicsInitType`
     - `self.MoveType`
     - `self.CollideCodeWithoutRemoving`
+    - `self.RemoveOnHit`
     - `self.MoveCollideType`
     - `self.CollisionGroupType`
-    - `self.RemoveOnHit`
     - `self.PaintDecalOnDeath`
     - `self.PaintDecalOnCollide`
-    - `self.CollideCodeWithoutRemoving`
     - `self.NextCollideWithoutRemove`
-    - `self.RemoveOnHit`
     - `self.SolidType`
     - `self.DecalTbl_DeathDecals`
     - `self.DecalTbl_OnCollideDecals`
