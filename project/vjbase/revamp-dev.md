@@ -6,6 +6,7 @@
     - `VJ.GetNearestPositions(ent1, ent2, centerEnt1)`
     - `VJ.GetNearestDistance(ent1, ent2, centerEnt1)`
     - `VJ.AddKillIcon(class, name, texture, data)`
+    - `VJ.GetName(ent, useClassFallback)`
   - Added AI tasks:
     - `TASK_VJ_PLAY_ACTIVITY`
     - `TASK_VJ_PLAY_SEQUENCE`
@@ -85,7 +86,7 @@
     - `self.EatCooldown`
   - Added Client side functions:
     - `self:CustomOnInitialize()`
-    - `self:Controller_CalcView(ply, origin, angles, fov, camera, cameraMode)`
+    - `self:Controller_OnCalcView(controller, ply, origin, angles, fov)`
   - Renamed `self:VJ_ACT_PLAYACTIVITY()` --> `self:PlayAnim()`
   - Changes to `self:PlayAnim()`:
     - Added new returns (in order): `anim`, `animDur`, `animType`
@@ -151,6 +152,7 @@
   - Renamed `self:RangeAttackCode()` --> `self:ExecuteRangeAttack()`
   - Renamed `self:LeapDamageCode()` --> `self:ExecuteLeapAttack()`
   - Renamed `self:CustomAttack()` --> `self:OnThinkAttack(isAttacking, enemy)`
+  - Renamed `self:CustomInitialize_CustomTank()` --> `self:Tank_Init()`
   - Renamed `self.LatestEnemyDistance` --> `self.EnemyData.Distance`
   - Renamed `self.NearestPointToEnemyDistance` --> `self.EnemyData.DistanceNearest`
   - Renamed `self.SoundTbl_MoveOutOfPlayersWay` --> `self.SoundTbl_YieldToPlayer`
@@ -264,6 +266,8 @@
   - Renamed `self.SoundTbl_MeleeAttackSlowPlayer` --> `self.SoundTbl_MeleeAttackPlayerSpeed`
   - Renamed `self.MeleeAttackSlowPlayerSoundLevel` --> `self.MeleeAttackPlayerSpeedSoundLevel`
   - Renamed `self.PropAP_MaxSize` --> `self.PropInteraction_MaxScale`
+  - Renamed `self.NextIdleSoundT_Reg` --> `self.IdleSoundBlockTime`
+  - Renamed `self.Tank_DeathSoldierModels` --> `self.Tank_DeathDriverCorpse`
   - Merged `self.AttackProps` and `self.PushProps` --> `self.PropInteraction`
   - Merged `self:CustomOnMeleeAttack_BeforeStartTimer()`, and `self:CustomOnMeleeAttack_AfterStartTimer()` --> `self:OnMeleeAttack(status, enemy)`
   - Merged `self:CustomAttackCheck_MeleeAttack()`, `self:CustomOnMeleeAttack_BeforeChecks()`, `self:CustomOnMeleeAttack_AfterChecks()`, and `self:CustomOnMeleeAttack_Miss()` --> `self:OnMeleeAttackExecute(status, ent, isProp)`
@@ -494,6 +498,7 @@
     - `self.DisableDefaultRangeAttackCode`
     - `self.RangeAttackAnimationStopMovement`
     - `self.DisableDefaultMeleeAttackCode`
+    - `self.Tank_GunnerIsTurning`
   - Removed timers:
     - `timer_act_playingattack`
     - `timer_act_seqreset`
@@ -503,6 +508,16 @@
     - `self:GetDrawWorldModel()`
     - `self.ReplacementWeapon`
   - `self.Primary.TakeAmmo` now works for both NPCs and players
+  - Renamed `self:CustomOnEquip()` --> `self:CustomOnEquip(newOwner)`
+  - Renamed `self:CustomOnDeploy()` --> `self:OnDeploy()`
+  - Renamed `self:CustomBulletSpawnPosition()` --> `self:OnGetBulletPos()`
+  - Renamed `self:CustomOnDrawWorldModel()` --> `self:OnDrawWorldModel()`
+  - Renamed `self:CustomOnFireAnimationEvent()` --> `self:OnAnimEvent(pos, ang, event, options)`
+  - Renamed `self:CustomOnHolster()` --> `self:OnHolster(newWep)`
+  - Renamed `self:CustomOnPrimaryAttack_BulletCallback()` --> `self:OnPrimaryAttack_BulletCallback()`
+  - Renamed `self:CustomOnSecondaryAttack()` --> `self:OnSecondaryAttack()`
+  - Merged `self:CustomOnReload()` and `self:CustomOnReload_Finish()` --> `self:OnReload(status)`
+  - Merged `self:CustomOnPrimaryAttack_BeforeShoot()`, `self:CustomOnPrimaryAttack_AfterShoot()`, and `self:CustomOnPrimaryAttack_MeleeHit()` --> `self:OnPrimaryAttack(status, statusData)`
   - Removed network variable `VJ_CurBulletPos`, instead use `self:GetBulletPos()`
   - Removed network variable `VJ_WorldModel_Invisible`, instead use the new world model functions
   - Removed:
@@ -512,6 +527,9 @@
     - `self.NPC_SecondaryFirePerforming`
     - `self.WorldModel_NoShadow`
     - `self.WorldModel_Invisible`
+    - `self.NPC_HasSecondaryFireSound`
+    - `self.LastOwner`
+    - `self.InitHasIdleAnimation`
 ## Spawner Base
   - Added a queue system
   - `SpawnPosition` in `self.EntitiesToSpawn` now takes a Vector instead of a table
@@ -597,6 +615,7 @@
     - `self.VJ_ID_Living`
     - `self.VJ_ID_Destructible`
     - `self.VJ_ID_Healable`
+    - `self.VJ_ID_Undead`
   - Renamed `self.IsVJBase_Gib` --> `self.IsVJBaseCorpse_Gib`
   - Renamed `self.VJ_IsHugeMonster` --> `self.VJ_ID_Boss`
   - Renamed `self.VJ_IsDetectableDanger` --> `self.VJ_ID_Danger`
